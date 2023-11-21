@@ -50,6 +50,19 @@ export default {
   },
 
   created() {
+    if (localStorage.getItem("uid") && localStorage.getItem("isLoggedIn")) {
+      const data = {
+        uid: localStorage.getItem("uid"),
+        isLoggedIn: localStorage.getItem("isLoggedIn"),
+      };
+
+      this.$store.dispatch("setLs", data);
+    }
+
+    if (!this.isLoggedIn) {
+      this.$router.push("/signin");
+    }
+
     this.$store.dispatch("fetchNotes");
     this.$store.dispatch("fetchCategories");
   },
@@ -62,12 +75,20 @@ export default {
     categories() {
       return this.$store.state.categories;
     },
+
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    },
+
+    uid() {
+      return this.$store.state.uid;
+    },
   },
 
   methods: {
     addNote() {
       const newNote = {
-        id: Date.now(),
+        id: this.uid,
         coords: {
           x: 0,
           y: 0,

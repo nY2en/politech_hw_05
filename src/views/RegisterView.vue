@@ -49,8 +49,8 @@
       "
     >
       Already have an account?
-      <RouterLink style="text-decoration: none; color: slateblue" to="/login"
-        >Login</RouterLink
+      <RouterLink style="text-decoration: none; color: slateblue" to="/signin"
+        >Sign In</RouterLink
       >
     </p>
   </FormKit>

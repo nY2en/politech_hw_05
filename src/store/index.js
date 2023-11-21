@@ -3,12 +3,20 @@ import { createStore } from "vuex";
 import { initializeApp } from "firebase/app";
 import {
   getDocs,
+  getDoc,
   collection,
   doc,
   deleteDoc,
   getFirestore,
   setDoc,
 } from "firebase/firestore";
+
+import {
+  getAuth,
+  // createUserWithEmailAndPassword
+  signInWithEmailAndPassword,
+  // signOut,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyABgWLVznaisP8g3bnsM9Xb5h31nam8eCs",
@@ -23,12 +31,15 @@ const firebaseConfig = {
 const APP = initializeApp(firebaseConfig);
 
 const DB = getFirestore(APP);
+const AUTH = getAuth(APP);
 
 export default createStore({
   state: () => ({
+    uid: null,
     notes: [],
     categories: [],
     checkedCategories: [],
+    isLoggedIn: false,
   }),
 
   getters: {
@@ -43,6 +54,21 @@ export default createStore({
   },
 
   mutations: {
+    setUid(state, data) {
+      state.uid = data;
+    },
+
+    setIsLoggedIn(state, data) {
+      state.isLoggedIn = data;
+    },
+
+    setLs(state, data) {
+      const { uid, isLoggedIn } = data;
+
+      state.uid = uid;
+      state.isLoggedIn = isLoggedIn;
+    },
+
     setNotes(state, data) {
       state.notes.push(data);
     },
@@ -72,15 +98,37 @@ export default createStore({
   },
 
   actions: {
-    fetchCategories({ commit }) {
+    SignUp() {},
+
+    async SignIn({ commit }, data) {
+      await signInWithEmailAndPassword(AUTH, data.email, data.password)
+        .then((data) => {
+          commit("setUid", data.user.uid);
+          commit("setIsLoggedIn", true);
+
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("uid", data.user.uid);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    setLs({ commit }, data) {
+      commit("setLs", data);
+    },
+
+    fetchCategories({ commit, state }) {
+      state.categories = [];
       getDocs(collection(DB, "Categories")).then((res) =>
         res.forEach((el) => commit("setCategories", el.data()))
       );
     },
 
-    fetchNotes({ commit }) {
-      getDocs(collection(DB, "Notes")).then((res) =>
-        res.forEach((el) => commit("setNotes", el.data()))
+    fetchNotes({ commit, state }) {
+      state.notes = [];
+      getDoc(doc(DB, "Boards", state.uid)).then((res) =>
+        commit("setNotes", res.data())
       );
     },
 

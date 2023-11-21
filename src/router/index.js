@@ -5,17 +5,17 @@ import LoginView from "../views/LoginView.vue";
 
 const routes = [
   {
-    path: "/register",
+    path: "/signup",
     name: "Register",
     component: RegisterView,
   },
   {
-    path: "/login",
+    path: "/signin",
     name: "Login",
     component: LoginView,
   },
   {
-    path: "/home",
+    path: "/board",
     name: "Home",
     component: HomeView,
   },

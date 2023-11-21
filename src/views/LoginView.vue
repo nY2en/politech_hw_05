@@ -40,21 +40,27 @@
       "
     >
       Do not have an account?
-      <RouterLink style="text-decoration: none; color: slateblue" to="/register"
-        >Register</RouterLink
+      <RouterLink style="text-decoration: none; color: slateblue" to="/signup"
+        >Sign Up</RouterLink
       >
     </p>
   </FormKit>
 </template>
 
 <script>
-import router from "@/router";
-
 export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    },
+  },
+
   methods: {
-    handleSubmit(credentials) {
-      console.log(credentials);
-      router.push("/home");
+    async handleSubmit(data) {
+      await this.$store.dispatch("SignIn", data);
+      if (this.isLoggedIn) {
+        this.$router.push("/board");
+      }
     },
   },
 };
