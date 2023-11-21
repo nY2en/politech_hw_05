@@ -14,15 +14,6 @@
     </p>
 
     <FormKit
-      type="text"
-      name="text"
-      help="Please enter your name."
-      validation="required|text"
-      validation-visibility="dirty"
-      placeholder="Name"
-    />
-
-    <FormKit
       type="email"
       name="email"
       help="Please enter your email address."
@@ -61,9 +52,10 @@ import router from "@/router";
 
 export default {
   methods: {
-    handleSubmit(credentials) {
-      console.log(credentials);
-      router.push("/home");
+    async handleSubmit(data) {
+      console.log(data);
+      await this.$store.dispatch("SignUp", data);
+      router.push("/board");
     },
   },
 };

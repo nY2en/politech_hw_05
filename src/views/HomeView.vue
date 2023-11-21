@@ -5,7 +5,7 @@
     @mouseup="handleMouseUp"
     @mousemove="handleMouseMove"
   >
-    <form>
+    <form style="padding: 20px">
       <ul>
         <li v-for="categorie in categories" :key="categorie.id">
           <input
@@ -26,7 +26,9 @@
       :note="note"
       :idx="index"
     />
-    <button class="btn" @click="addNote">Add note</button>
+    <button class="btn bottom" @click="addNote">Add note</button>
+
+    <button class="btn top" @click="signOut">Sign Out</button>
   </div>
 </template>
 
@@ -61,6 +63,7 @@ export default {
 
     if (!this.isLoggedIn) {
       this.$router.push("/signin");
+      return;
     }
 
     this.$store.dispatch("fetchNotes");
@@ -99,6 +102,11 @@ export default {
       };
 
       this.$store.dispatch("addNote", newNote);
+    },
+
+    signOut() {
+      this.$store.dispatch("SignOut");
+      this.$router.push("/signin");
     },
 
     handleMouseDown(e) {
@@ -179,8 +187,7 @@ export default {
 
 .btn {
   position: fixed;
-  bottom: 1%;
-  right: 1%;
+
   padding: 12px;
 
   font-size: 16px;
@@ -200,5 +207,15 @@ export default {
   &:focus {
     transform: scale(1.1);
   }
+}
+
+.top {
+  top: 1%;
+  right: 1%;
+}
+
+.bottom {
+  bottom: 1%;
+  right: 1%;
 }
 </style>

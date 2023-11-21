@@ -8,14 +8,14 @@ import {
   doc,
   // deleteDoc,
   getFirestore,
-  // setDoc,
+  setDoc,
 } from "firebase/firestore";
 
 import {
+  createUserWithEmailAndPassword,
   getAuth,
-  // createUserWithEmailAndPassword
   signInWithEmailAndPassword,
-  // signOut,
+  signOut,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -36,7 +36,7 @@ const AUTH = getAuth(APP);
 export default createStore({
   state: () => ({
     uid: null,
-    notes: [],
+    board: { notes: [] },
     categories: [],
     checkedCategories: [],
     isLoggedIn: false,
@@ -44,11 +44,11 @@ export default createStore({
 
   getters: {
     filteredNotes(state) {
-      return state.notes.filter((el) => {
+      return state.board.notes.filter((el) => {
         if (state.checkedCategories.length > 0) {
           return state.checkedCategories.includes(String(el.categorie));
         }
-        return state.notes;
+        return state.board.notes;
       });
     },
   },
@@ -69,31 +69,30 @@ export default createStore({
       state.isLoggedIn = isLoggedIn;
     },
 
-    setNotes(state, data) {
+    setBoard(state, data) {
       if (!data) {
-        state.notes = [];
         return;
       }
 
-      state.notes = data;
+      state.board = data;
     },
 
     addNotes(state, data) {
-      state.notes.push(data);
+      state.board.notes.push(data);
     },
 
-    setCategories(state, data) {
+    addCategories(state, data) {
       state.categories.push(data);
     },
 
     updateNote(state, data) {
-      const idx = state.notes.findIndex((el) => el.id === data.id);
-      state.notes.splice(idx, 1, data);
+      const idx = state.board.notes.findIndex((el) => el.id === data.id);
+      state.board.notes.splice(idx, 1, data);
     },
 
     deleteNote(state, data) {
-      const idx = state.notes.findIndex((el) => el.id === data.id);
-      state.notes.splice(idx, 1);
+      const idx = state.board.notes.findIndex((el) => el.id === data.id);
+      state.board.notes.splice(idx, 1);
     },
 
     checkCategorie(state, data) {
@@ -107,7 +106,20 @@ export default createStore({
   },
 
   actions: {
-    SignUp() {},
+    async SignUp({ commit }, data) {
+      await createUserWithEmailAndPassword(AUTH, data.email, data.password)
+        .then((data) => {
+          commit("setUid", data.user.uid);
+          commit("setIsLoggedIn", true);
+
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("uid", data.user.uid);
+          console.log(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
 
     async SignIn({ commit }, data) {
       await signInWithEmailAndPassword(AUTH, data.email, data.password)
@@ -123,37 +135,45 @@ export default createStore({
         });
     },
 
-    setLs({ commit }, data) {
-      commit("setLs", data);
+    async SignOut({ state }) {
+      await signOut(AUTH);
+      state.uid = null;
+      state.isLoggedIn = null;
+      state.categories = [];
+      state.board.notes = [];
+      localStorage.removeItem("uid");
+      localStorage.removeItem("isLoggedIn");
     },
 
-    fetchCategories({ commit, state }) {
-      state.categories = [];
+    fetchCategories({ commit }) {
       getDocs(collection(DB, "Categories")).then((res) =>
-        res.forEach((el) => commit("setCategories", el.data()))
+        res.forEach((el) => commit("addCategories", el.data()))
       );
     },
 
     fetchNotes({ commit, state }) {
-      state.notes = [];
       getDoc(doc(DB, "Boards", state.uid)).then((res) =>
-        commit("setNotes", res?.data()?.notes)
+        commit("setBoard", res?.data())
       );
     },
 
-    addNote({ commit }, data) {
-      // setDoc(doc(DB, "Boards", `${data.id}`), data);
-      commit("setNotes", data);
+    setLs({ commit }, data) {
+      commit("setLs", data);
     },
 
-    updateNote({ commit }, data) {
-      // setDoc(doc(DB, "Boards", `${data.uid}`), data);
+    addNote({ commit, state }, data) {
+      commit("addNotes", data);
+      setDoc(doc(DB, "Boards", `${data.uid}`), state.board);
+    },
+
+    updateNote({ commit, state }, data) {
       commit("updateNote", data);
+      setDoc(doc(DB, "Boards", `${data.uid}`), state.board);
     },
 
-    deleteNote({ commit }, data) {
-      // deleteDoc(doc(DB, "Boards", `${data.id}`));
+    deleteNote({ commit, state }, data) {
       commit("deleteNote", data);
+      setDoc(doc(DB, "Boards", `${data.uid}`), state.board);
     },
 
     checkCategorie({ commit }, data) {
