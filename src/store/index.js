@@ -114,7 +114,6 @@ export default createStore({
 
           localStorage.setItem("isLoggedIn", true);
           localStorage.setItem("uid", data.user.uid);
-          console.log(data);
         })
         .catch((error) => {
           console.log(error);

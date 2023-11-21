@@ -53,7 +53,6 @@ import router from "@/router";
 export default {
   methods: {
     async handleSubmit(data) {
-      console.log(data);
       await this.$store.dispatch("SignUp", data);
       router.push("/board");
     },
