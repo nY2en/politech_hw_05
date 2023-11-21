@@ -48,13 +48,11 @@
 </template>
 
 <script>
-import router from "@/router";
-
 export default {
   methods: {
     async handleSubmit(data) {
       await this.$store.dispatch("SignUp", data);
-      router.push("/board");
+      this.$router.push("/board");
     },
   },
 };
