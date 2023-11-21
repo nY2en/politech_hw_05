@@ -6,9 +6,9 @@ import {
   getDoc,
   collection,
   doc,
-  deleteDoc,
+  // deleteDoc,
   getFirestore,
-  setDoc,
+  // setDoc,
 } from "firebase/firestore";
 
 import {
@@ -70,6 +70,15 @@ export default createStore({
     },
 
     setNotes(state, data) {
+      if (!data) {
+        state.notes = [];
+        return;
+      }
+
+      state.notes = data;
+    },
+
+    addNotes(state, data) {
       state.notes.push(data);
     },
 
@@ -128,22 +137,22 @@ export default createStore({
     fetchNotes({ commit, state }) {
       state.notes = [];
       getDoc(doc(DB, "Boards", state.uid)).then((res) =>
-        commit("setNotes", res.data())
+        commit("setNotes", res?.data()?.notes)
       );
     },
 
     addNote({ commit }, data) {
-      setDoc(doc(DB, "Notes", `${data.id}`), data);
+      // setDoc(doc(DB, "Boards", `${data.id}`), data);
       commit("setNotes", data);
     },
 
     updateNote({ commit }, data) {
-      setDoc(doc(DB, "Notes", `${data.id}`), data);
+      // setDoc(doc(DB, "Boards", `${data.uid}`), data);
       commit("updateNote", data);
     },
 
     deleteNote({ commit }, data) {
-      deleteDoc(doc(DB, "Notes", `${data.id}`));
+      // deleteDoc(doc(DB, "Boards", `${data.id}`));
       commit("deleteNote", data);
     },
 

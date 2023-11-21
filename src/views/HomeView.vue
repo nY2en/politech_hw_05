@@ -88,7 +88,8 @@ export default {
   methods: {
     addNote() {
       const newNote = {
-        id: this.uid,
+        id: Date.now(),
+        uid: this.uid,
         coords: {
           x: 0,
           y: 0,
