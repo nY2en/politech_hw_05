@@ -145,13 +145,15 @@ export default createStore({
       localStorage.removeItem("isLoggedIn");
     },
 
-    fetchCategories({ commit }) {
+    fetchCategories({ commit, state }) {
+      state.categories = [];
       getDocs(collection(DB, "Categories")).then((res) =>
         res.forEach((el) => commit("addCategories", el.data()))
       );
     },
 
     fetchNotes({ commit, state }) {
+      state.board.notes = [];
       getDoc(doc(DB, "Boards", state.uid)).then((res) =>
         commit("setBoard", res?.data())
       );
