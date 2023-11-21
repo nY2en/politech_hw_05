@@ -8,25 +8,16 @@ const routes = [
     path: "/register",
     name: "Register",
     component: RegisterView,
-    meta: {
-      requiresAuth: false,
-    },
   },
   {
     path: "/login",
     name: "Login",
     component: LoginView,
-    meta: {
-      requiresAuth: false,
-    },
   },
   {
     path: "/home",
     name: "Home",
     component: HomeView,
-    meta: {
-      requiresAuth: true,
-    },
   },
 ];
 

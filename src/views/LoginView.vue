@@ -9,7 +9,9 @@
     style="width: 400px; margin: 300px auto"
     @submit="handleSubmit"
   >
-    <p style="text-align: center; margin-bottom: 10px; color: grey">Login</p>
+    <p style="text-align: center; margin-bottom: 10px; font-size: 20px">
+      Loginization
+    </p>
 
     <FormKit
       type="email"
@@ -17,7 +19,7 @@
       help="Please enter your email address."
       validation="required|email|ends_with:.com"
       validation-visibility="dirty"
-      placeholder="nikita@gmail.com"
+      placeholder="Email"
     />
 
     <FormKit
@@ -26,7 +28,22 @@
       help="Please enter password address."
       validation="required"
       validation-visibility="dirty"
+      placeholder="Password"
     />
+
+    <p
+      style="
+        text-align: center;
+        color: grey;
+        margin-bottom: 10px;
+        font-size: 14px;
+      "
+    >
+      Do not have an account?
+      <RouterLink style="text-decoration: none; color: slateblue" to="/register"
+        >Register</RouterLink
+      >
+    </p>
   </FormKit>
 </template>
 

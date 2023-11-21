@@ -9,7 +9,7 @@
     style="width: 400px; margin: 300px auto"
     @submit="handleSubmit"
   >
-    <p style="text-align: center; margin-bottom: 10px; color: grey">
+    <p style="text-align: center; margin-bottom: 10px; font-size: 20px">
       Registration
     </p>
 
@@ -39,6 +39,20 @@
       validation-visibility="dirty"
       placeholder="Password"
     />
+
+    <p
+      style="
+        text-align: center;
+        color: grey;
+        margin-bottom: 10px;
+        font-size: 14px;
+      "
+    >
+      Already have an account?
+      <RouterLink style="text-decoration: none; color: slateblue" to="/login"
+        >Login</RouterLink
+      >
+    </p>
   </FormKit>
 </template>
 
